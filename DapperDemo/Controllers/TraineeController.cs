@@ -1,5 +1,7 @@
-﻿using DapperDemo.Contract;
+﻿using AutoMapper;
+using DapperDemo.Contract;
 using DapperDemo.Dto;
+using DapperDemo.Entities;
 using DapperDemo.Validator;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -12,20 +14,27 @@ namespace DapperDemo.Controllers
     public class TraineeController : ControllerBase
     {
         private readonly ITraineeRepository _repository;
-        public TraineeController(ITraineeRepository repository) => _repository = repository;
+        private readonly IMapper _mapper;
+        public TraineeController(ITraineeRepository repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetTrainees()
         {
             var trainees = await _repository.GetTrainees();
-            return Ok(trainees);
+            var traineeData = _mapper.Map<List<TraineeViewDto>>(trainees);
+            return Ok(traineeData);
         }
 
         [HttpGet("{id}", Name = "TraineeById")]
         public async Task<IActionResult> GetTraineeById(int id)
         {
             var trainee = await _repository.GetTraineeById(id);
-            return Ok(trainee);
+            var singleTrainee = _mapper.Map<TraineeViewDto>(trainee);
+            return Ok(singleTrainee);
         }
 
         [HttpPost]

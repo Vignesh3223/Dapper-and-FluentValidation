@@ -21,6 +21,7 @@ builder.Services.AddDbContext<TraineeContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("myConnection")));
 builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddScoped<ITraineeRepository, TraineeRepository>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
